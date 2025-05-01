@@ -1,195 +1,119 @@
-const { config } = global.GoatBot;
-
 module.exports = {
-    config: {
-        name: "balance",
-        aliases: ["bal", "money"],
-        version: "1.6.9",
-        author: "Nazrul",
-        countDown: 1,
-        role: 0,
-        description: "View, transfer, request, or add/delete money",
-        category: "economy",
-        guide: { en: `
-            {pn}: help to view cmds guide
-            {pn}: view your balance
-            {pn} <@tag>: view the balance of the tagged person
-            {pn} transfer <@tag>/<UID>/<reply> <amount>: transfer money
-            {pn} request <amount>: request money from the admin
-            {pn} add <@tag>/<UID>/<reply> <amount>: admin adds money
-            {pn} delete <@tag>/<UID>/<reply> <amount>: admin deletes money` }
-    },
-
-    onStart: async function ({ message, usersData, event, args, api }) {
-        const senderID = event.senderID;
-        const allowedUIDs = [config.adminBot, ...config.adminBot];
-
-        const formatMoney = (num) => {
-            const units = ["", "K", "M", "B", "T", "Q", "Qi", "Sx", "Sp", "Oc", "N", "D"];
-            let unit = 0;
-            let number = Number(num);
-
-            while (number >= 1000 && unit < units.length - 1) {
-                number /= 1000;
-                unit++;
-            }
-
-            return `${number.toFixed(2)}${units[unit]}`;
-        };
-
-        const isValidAmount = (value) => {
-            const num = Number(value);
-            return !isNaN(num) && num > 0;
-        };
-
-        const getTargetUID = () => {
-            if (event.messageReply) return event.messageReply.senderID;
-            if (Object.keys(event.mentions).length > 0) return Object.keys(event.mentions)[0];
-            if (!isNaN(args[1])) return args[1];
-            return null;
-        };
-
-        const getAmount = () => args[args.length - 1];
-
-        if (args[0] === "help") {
-            return message.reply(`1.${config.prefix} balance: View your balance.
-2. ${config.prefix} balance <@tag>: View another user's balance.
-3. ${config.prefix} balance transfer <UID> <amount>: Transfer money.
-4. ${config.prefix} balance request <amount>: Request money from admin.
-5. ${config.prefix} balance add <UID> <amount>: Admin adds money.
-6. ${config.prefix} balance delete <UID> <amount>: Admin deletes money.`);
-        }
-
-        if (args[0] === "add") {
-            if (!allowedUIDs.includes(senderID)) {
-                return message.reply("❌ You don't have permission to use this command.");
-            }
-
-            const targetUID = getTargetUID();
-            const amount = getAmount();
-
-            if (!targetUID) {
-                return message.reply("❌ Could not identify the user. Make sure to tag, reply, or provide a valid UID.");
-            }
-            if (!isValidAmount(amount)) {
-                return message.reply("❌ Please provide a valid positive amount.");
-            }
-
-            const userData = await usersData.get(targetUID) || { money: "0" };
-            const userName = userData.name || "Unknown User";
-            const newBalance = (Number(userData.money) + Number(amount)).toString();
-
-            await usersData.set(targetUID, { money: newBalance });
-
-            return message.reply(`✅ Successfully added ${formatMoney(amount)}$ to the balance of ${userName} (UID: ${targetUID}).`);
-        }
-
-        if (args[0] === "delete") {
-            if (!allowedUIDs.includes(senderID)) {
-                return message.reply("❌ You don't have permission to use this command.");
-            }
-
-            const targetUID = getTargetUID();
-            const amount = getAmount();
-
-            if (!targetUID) {
-                return message.reply("❌ Could not identify the user. Make sure to tag, reply, or provide a valid UID.");
-            }
-            if (!isValidAmount(amount)) {
-                return message.reply("❌ Please provide a valid positive amount.");
-            }
-
-            const userData = await usersData.get(targetUID) || { money: "0" };
-            const userName = userData.name || "Unknown User";
-            const currentBalance = Number(userData.money);
-
-            if (currentBalance < Number(amount)) {
-                return message.reply("❌ The target does not have enough money to delete.");
-            }
-
-            const newBalance = (currentBalance - Number(amount)).toString();
-
-            await usersData.set(targetUID, { money: newBalance });
-
-            return message.reply(`✅ Successfully deleted ${formatMoney(amount)}$ from the balance of ${userName} (UID: ${targetUID}).`);
-        }
-
-        if (args[0] === "transfer") {
-            const targetUID = getTargetUID();
-            const amount = getAmount();
-
-            if (!targetUID) {
-                return message.reply("❌ Could not identify the user. Make sure to tag, reply, or provide a valid UID.");
-            }
-            if (targetUID === senderID) {
-                return message.reply("❌ You cannot transfer money to yourself.");
-            }
-            if (!isValidAmount(amount)) {
-                return message.reply("❌ Please provide a valid positive amount.");
-            }
-
-            const senderData = await usersData.get(senderID) || { money: "0" };
-            const recipientData = await usersData.get(targetUID) || { money: "0" };
-            const recipientName = recipientData.name || "Unknown User";
-
-            const senderBalance = Number(senderData.money);
-            const recipientBalance = Number(recipientData.money);
-
-            if (senderBalance < Number(amount)) {
-                return message.reply("❌ You don't have enough money to transfer.");
-            }
-
-            const updatedSenderBalance = (senderBalance - Number(amount)).toString();
-            const updatedRecipientBalance = (recipientBalance + Number(amount)).toString();
-
-            await usersData.set(senderID, { money: updatedSenderBalance });
-            await usersData.set(targetUID, { money: updatedRecipientBalance });
-
-            return message.reply(`✅ Successfully transferred ${formatMoney(amount)}$ to ${recipientName} (UID: ${targetUID}).`);
-        }
-
-        if (args[0] === "request") {
-            const amount = args[1];
-
-            if (!isValidAmount(amount)) {
-                return message.reply("❌ Please enter a valid positive amount.");
-            }
-
-            const data = await usersData.get(senderID);
-            const name = data.name || "Darling";
-
-            const adminIDs = ["100049220893428"];
-            const threadIDs = ["9191391594224159", "7272501799469344"];
-
-            const requestMessage = `📢 User ${name} (${senderID}) has requested ${formatMoney(amount)}$.`;
-
-            for (const adminID of adminIDs) {
-                api.sendMessage(requestMessage, adminID);
-            }
-            for (const threadID of threadIDs) {
-                api.sendMessage(requestMessage, threadID);
-            }
-
-            return message.reply(`✅ Your request for ${formatMoney(amount)}$ has been sent to the admins.`);
-        }
-
-        if (Object.keys(event.mentions).length > 0 || event.messageReply || !isNaN(args[0])) {
-            const targetUID = getTargetUID();
-
-            if (!targetUID) {
-                return message.reply("❌ Could not identify the user. Use UID instead.");
-            }
-
-            const userData = await usersData.get(targetUID) || { money: "0", name: "Unknown User" };
-            const userName = userData.name || "Unknown User";
-            const userMoney = userData.money || "0";
-
-            return message.reply(`💰 ${userName} (UID: ${targetUID}) has ${formatMoney(userMoney)}$ (${userMoney}$).`);
-        }
-
-        const userData = await usersData.get(senderID) || { money: "0", name: "Unknown User" };
-        const userName = userData.name || "Unknown User";
-
-        return message.reply(`💸 ${userName}, you have ${formatMoney(userData.money)}$ (${userData.money}$).`);
+  config: {
+    name: "balance",
+    aliases: ["bal", "💰", "cash"],
+    version: "3.0",
+    author: "NTKhang & redesign by EXOCRAT",
+    countDown: 3,
+    role: 0,
+    shortDescription: "💰 Check financial status",
+    longDescription: "View detailed financial information with beautiful formatting",
+    category: "economy",
+    guide: {
+      en: "{pn} - View your balance\n{pn} @user - Check another user's balance\n{pn} top - View wealth rankings"
     }
+  },
+
+  langs: {
+    en: {
+      balanceTitle: "✨ 𝗙𝗜𝗻𝗮𝗻𝗰𝗶𝗮𝗹 𝗦𝘁𝗮𝘁𝘂𝘀  ✨",
+      yourBalance: "👤 𝗬𝗼𝘂 𝗵𝗮𝘃𝗲:\n━━━━━━━━━━━━\n💰 𝗖𝗮𝘀𝗵: %1\n🏦 𝗕𝗮𝗻𝗸: %2\n💎 𝗧𝗼𝘁𝗮𝗹: %3\n━━━━━━━━━━━━",
+      userBalance: "👤 𝗨𝘀𝗲𝗿: %1\n━━━━━━━━━━━━\n💰 𝗖𝗮𝘀𝗵: %2\n🏦 𝗕𝗮𝗻𝗸: %3\n💎 𝗧𝗼𝘁𝗮𝗹: %4\n━━━━━━━━━━━━",
+      leaderboardTitle: "🏆 𝗪𝗲𝗮𝗹𝘁𝗵 𝗟𝗲𝗮𝗱𝗲𝗿𝗯𝗼𝗮𝗿𝗱  🏆",
+      leaderboardEntry: "▸ 𝗥𝗮𝗻𝗸 #%1: %2\n   %3 〘 %4 〙\n   💰 %5  🏦 %6\n━━━━━━━━━━━━",
+      noBalance: "💸 You're broke! Start earning!",
+      processing: "📊 Calculating wealth..."
+    }
+  },
+
+  formatMoney: function (num) {
+    if (isNaN(num)) return "0";
+    const units = ["", "K", "M", "B", "T"];
+    let unitIndex = 0;
+    let n = parseFloat(num);
+    
+    while (n >= 1000 && unitIndex < units.length - 1) {
+      n /= 1000;
+      unitIndex++;
+    }
+    
+    return n.toFixed(n < 10 ? 2 : 1) + units[unitIndex];
+  },
+
+  getProgressBar: function (percentage) {
+    const progress = Math.min(100, Math.max(0, percentage));
+    const filled = "■".repeat(Math.round(progress/10));
+    const empty = "□".repeat(10 - Math.round(progress/10));
+    return `[${filled}${empty}] ${progress.toFixed(1)}%`;
+  },
+
+  onStart: async function ({ message, usersData, event, args, getLang }) {
+    // Show processing message
+    await message.reply(getLang("processing"));
+    
+    const { senderID, mentions } = event;
+    
+    // Leaderboard mode
+    if (args[0]?.toLowerCase() === "top") {
+      const allUsers = await usersData.getAll();
+      const wealthyUsers = allUsers
+        .filter(user => user.money || user.bank)
+        .sort((a, b) => (b.money + b.bank) - (a.money + a.bank))
+        .slice(0, 10);
+      
+      if (wealthyUsers.length === 0) {
+        return message.reply(getLang("noBalance"));
+      }
+      
+      const maxWealth = wealthyUsers[0].money + wealthyUsers[0].bank;
+      const leaderboard = wealthyUsers.map((user, index) => {
+        const name = user.name || `User ${user.ID}`;
+        const total = user.money + user.bank;
+        const progress = this.getProgressBar((total/maxWealth)*100);
+        return getLang(
+          "leaderboardEntry",
+          index + 1,
+          name,
+          progress,
+          this.formatMoney(total),
+          this.formatMoney(user.money),
+          this.formatMoney(user.bank)
+        );
+      }).join("\n");
+      
+      return message.reply(
+        `📜 ${getLang("leaderboardTitle")}\n\n${leaderboard}`
+      );
+    }
+    
+    // Check another user's balance
+    if (Object.keys(mentions).length > 0) {
+      const targetID = Object.keys(mentions)[0];
+      const userData = await usersData.get(targetID);
+      const cash = this.formatMoney(userData.money || 0);
+      const bank = this.formatMoney(userData.bank || 0);
+      const total = this.formatMoney((userData.money || 0) + (userData.bank || 0));
+      
+      return message.reply(
+        `${getLang("balanceTitle")}\n` +
+        getLang("userBalance", 
+          mentions[targetID].replace("@", ""), 
+          cash, 
+          bank, 
+          total
+        )
+      );
+    }
+    
+    // Check own balance
+    const userData = await usersData.get(senderID);
+    const cash = this.formatMoney(userData.money || 0);
+    const bank = this.formatMoney(userData.bank || 0);
+    const total = this.formatMoney((userData.money || 0) + (userData.bank || 0));
+    
+    message.reply(
+      `${getLang("balanceTitle")}\n` +
+      getLang("yourBalance", cash, bank, total)
+    );
+  }
 };
