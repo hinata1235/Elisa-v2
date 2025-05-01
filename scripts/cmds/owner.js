@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
 config: {
   name: "owner",
-  aurthor:"Tokodori",// Convert By Goatbot Tokodori 
+  aurthor:"✨Sakib✨", 
    role: 0,
   shortDescription: " ",
   longDescription: "",
@@ -16,17 +16,15 @@ config: {
   onStart: async function ({ api, event }) {
   try {
     const ownerInfo = {
-      name: '𝐇𝐔𝐒𝐒𝐀𝐈𝐍 💝👽',
-      choise: 'Only Russian 🥵🔥',
-      habit: 'Playing Free Fire 🔥',
-      gender: 'Male',
-      age: '16+',
-      height: '_hat 🐸🤠',
-      facebookLink: 'https://www.facebook.com/profile.php?id=100071009500533',
-      nick: '𝐇4𝐒𝐒𝐀1𝐍 💫🔥'
+      name: '𝐒𝐚𝐤𝐢𝐛',
+      gender: 'MaLe',
+      age: '1+',
+      height: '5.11',
+      choise: 'loading',
+      nick: 'As your wish '
     };
 
-    const bold = 'https://i.imgur.com/LbneO8C.mp4'; // Replace with your Google Drive videoid link https://drive.google.com/uc?export=download&id=here put your video id
+    const bold = 'https://drive.google.com/uc?id=1sBBJ0J5-_iZRbDsIjD6JR5Da_EtOSGRf'; // Replace with your Google Drive videoid link https://drive.google.com/uc?export=download&id=here put your video id
 
     const tmpFolderPath = path.join(__dirname, 'tmp');
 
@@ -39,19 +37,18 @@ config: {
 
     fs.writeFileSync(videoPath, Buffer.from(videoResponse.data, 'binary'));
 
-    const response = `╭────────────◊
-├‣Oᴡɴᴇʀ Iɴғᴏʀᴍᴀᴛɪᴏɴ 📃
-├───────────◊
-├‣ Nᴀᴍᴇ: ${ownerInfo.name}
-├‣ Cʜᴏɪsᴇ: ${ownerInfo.choise}
-├‣ Hᴀʙɪᴛ: ${ownerInfo.habit}
-├‣ Gᴇɴᴅᴇʀ:  ${ownerInfo.gender}
-├‣ Aɢᴇ:  ${ownerInfo.age}
-├‣ Hᴇɪɢʜᴛ: ${ownerInfo.height}
-├‣ Fᴀᴄᴇʙᴏᴏᴋ:  ${ownerInfo.facebookLink}
-├‣ Nɪᴄᴋ: ${ownerInfo.nick}   
-╰───────────◊`;
-
+    const response = ` 
+╭[!   ]•〆𝐒𝐚𝐤𝐢𝐛〆 ]  ─⦿
+╭────────────◊
+├‣ 𝐁𝐨𝐭 & 𝐎𝐰𝐧𝐞𝐫 𝐈𝐧𝐟𝐨𝐫𝐦𝐚𝐭𝐢𝐨𝐧 
+├‣ 𝐍𝐚𝐦𝐞: ${ownerInfo.name}
+├‣ 𝐆𝐞𝐧𝐝𝐞𝐫:  ${ownerInfo.gender}
+├‣ 𝐀𝐠𝐞 .${ownerInfo.age}
+├‣ 𝐍𝐢𝐜𝐤 : ${ownerInfo.nick}
+├‣ 𝐂𝐡𝐨𝐢𝐬𝐞:  ${ownerInfo.choise}   
+├‣ 𝐇𝐞𝐢𝐠𝐡𝐭 : ${ownerInfo.height}
+╰────────────◊ 
+`;
 
     await api.sendMessage({
       body: response,

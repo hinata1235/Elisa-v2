@@ -24,7 +24,7 @@ langs: {
 
         cantGetPendingList: "Can't get the pending list!",
         returnListPending: "»「PENDING」«❮ The whole number of threads to approve is: %1 thread ❯\n\n%2",
-        returnListClean: "「PENDING」There is no thread in the pending list"
+        returnListClean: "[ 𝑷𝒆𝒏𝒅𝒊𝒏𝒈] 𝑻𝒉𝒆𝒓𝒆 𝒊𝒔 𝒏𝒐 𝑻𝒉𝒓𝒆𝒂𝒅 𝒊𝒏 𝒕𝒉𝒆 𝑷𝒆𝒏𝒅𝒊𝒏𝒈 𝒍𝒊𝒔𝒕 𝒃𝒃𝒚..🐥🌸"
     }
   },
 
@@ -47,16 +47,15 @@ onReply: async function({ api, event, Reply, getLang, commandName, prefix }) {
         const index = body.split(/\s+/);
         for (const ArYanIndex of index) {
             if (isNaN(ArYanIndex) || ArYanIndex <= 0 || ArYanIndex > Reply.pending.length) return api.sendMessage(getLang("invaildNumber", ArYanIndex), threadID, messageID);
-            api.sendMessage(`♦⪼  𝗖óก𝕟૯τ૯𝕕  ⪻♦ 
-╭──────────────⭓
-│‣ 𝐆𝐥𝐨𝐛𝐚𝐥 𝐩𝐫𝐞𝐟𝐢𝐱: / 
-│‣ 𝐘𝐨𝐮𝐫 𝐠𝐫𝐨𝐮𝐩 𝐩𝐫𝐞𝐟𝐢𝐱: / 
-╰──────────────⭓
-╭──────────────⭓
-│➜ 𝐎𝐭𝐡𝐞𝐫 𝐃𝐞𝐭𝐚𝐢𝐥𝐬⚠️
-│Owner : 𝐓 𝐀 𝐍 𝐉 𝐈 𝐋
-│FB : Ťåñjïł Hāšāń Æßp 
-╰──────────────⭓`, Reply.pending[ArYanIndex - 1].threadID);
+            api.sendMessage(`𝒂𝒑𝒑𝒓𝒐𝒗𝒆 𝒉𝒂𝒔 𝒃𝒆𝒆𝒏 𝒔𝒖𝒄𝒄𝒆𝒔𝒔𝒇𝒖𝒍𝒍𝒚 🐥🌸 
+🌎 𝐆𝐥𝐨𝐛𝐚𝐥 𝐩𝐫𝐞𝐟𝐢𝐱: !
+📚 𝐘𝐨𝐮𝐫 𝐠𝐫𝐨𝐮𝐩 𝐩𝐫𝐞𝐟𝐢𝐱: !
+
+╭‣ 𝐀𝐝𝐦𝐢𝐧 👑
+╰‣ 𝑺𝒂𝒌𝒊𝒃
+
+╭‣ 𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 ⓕ
+╰‣ 𝐓𝐚𝐧𝐣𝐢𝐫𝐨 𝐤𝐚𝐦𝐚𝐝𝐨 https://www.facebook.com/share/15VoqHov4x/ `, Reply.pending[ArYanIndex - 1].threadID);
             count+=1;
         }
         return api.sendMessage(getLang("approveSuccess", count), threadID, messageID);
