@@ -9,7 +9,7 @@ const csbApi = async () => {
 
 module.exports = {
     config: {
-        name: "imgur",
+        name: "Imgur",
         version: "1.0.0",
         role: 0,
         author: "♡ Nazrul ♡",
@@ -17,7 +17,7 @@ module.exports = {
         countDown: 0,
         category: "imgur",
         guide: {
-            en: '[reply to image]'
+            en: '[🎀~𝐁𝐛𝐲 𝐮𝐩𝐥𝐨𝐚𝐝 𝐘𝐨𝐮𝐫 𝐏𝐡𝐨𝐭𝐨𝐬 𝐚𝐧𝐝 𝐯𝐢𝐝𝐞𝐨 𝐓𝐨 𝐢𝐦𝐠𝐮𝐫]'
         }
     },
 
