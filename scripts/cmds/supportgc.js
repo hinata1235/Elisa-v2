@@ -1,4 +1,4 @@
-module.exports = {
+ module.exports = {
   config: {
     name: "supportgc",
     version: "1.1",
@@ -6,10 +6,10 @@ module.exports = {
     countDown: 5,
     role: 0,
     shortDescription: {
-      en: "Join the support group chat"
+      en: "Join the support group chat..✨🐥"
     },
     longDescription: {
-      en: "Join the official support group chat"
+      en: "Join the official support group chat..✨🐥"
     },
     category: "General",
     guide: {
@@ -18,7 +18,7 @@ module.exports = {
   },
 
   onStart: async function ({ api, event, threadsData, getLang, message }) {
-    const supportGroupThreadID = "27455554110724563"; // Replace with your support group thread ID
+    const supportGroupThreadID = "8634151466617454"; // Replace with your support group thread ID
     const botID = api.getCurrentUserID();
 
     try {
@@ -33,7 +33,8 @@ module.exports = {
       if (userAlreadyInGroup) {
         // Reply with a message indicating that the user is already in the group
         const alreadyInGroupMessage = `
-🚫 আপনি ইতিমধ্যেই SupportGc গ্রুপের সদস্য🚫
+Opps Baka ❌
+You are already a member of the SUPPORTGC Group 🐥❌
 ------------------------
         `;
         return message.reply(alreadyInGroupMessage);
@@ -44,7 +45,7 @@ module.exports = {
 
       // Reply with a message indicating successful addition
       const successMessage = `
-🎉 আপনাকে সফলভাবে SupportGc তে যুক্ত করা হয়েছে 🎉
+You have successfully added to SUPPORTGC 🐥🤞 
 ------------------------
       `;
       return message.reply(successMessage);
@@ -54,7 +55,7 @@ module.exports = {
       // Reply with a message indicating the failure
       const senderName = event.senderName || (await api.getUserInfo(event.senderID))[event.senderID].name;
       const failedMessage = `
-❌ আপনাকে SopportGc তে এড করতে ব্যর্থ হয়েছি😞।আপনি আমায় ফ্রেন্ড রিকোয়েস্ট পাঠান অথবা আপনার প্রোফাইল আনলক করুন এবং আবার চেষ্টা করুন ❌
+❌Failed to add you to Supportgc. You send me a friend request or unlock your profile and try again ❌
 ------------------------
       `;
       console.error("Error adding user to support group:", error);

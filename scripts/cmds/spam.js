@@ -1,4 +1,4 @@
-module.exports = {
+ module.exports = {
   config: {
     name: "spam",
     aurthor:"kim/zed",// Convert By Goatbot Zed
