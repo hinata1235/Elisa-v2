@@ -40,12 +40,12 @@ module.exports = {
       });
 
       const msg = {
-        body: `✅ ${nameUser}, 𝐘𝐨𝐮'𝐯𝐞 𝐚𝐧𝐬𝐰𝐞𝐫𝐞𝐝 𝐜𝐨𝐫𝐫𝐞𝐜𝐭𝐥𝐲!\nAnswer: ${correctAnswer}\n𝐘𝐨𝐮'𝐯𝐞 𝐫𝐞𝐜𝐢𝐯𝐞𝐝${rewardCoins} 𝐜𝐨𝐢𝐧𝐬 𝐚𝐧𝐝 ${rewardExp} 𝐞𝐱𝐩 𝐚𝐬 𝐚 𝐫𝐞𝐰𝐚𝐫𝐝!`
+        body: `✅ ${nameUser}, You've answered correctly!\nAnswer: ${correctAnswer}\nYou've received ${rewardCoins} coins and ${rewardExp} exp as a reward!`
       };
       return api.sendMessage(msg, event.threadID, event.messageID);
     } else {
       api.unsendMessage(Reply.messageID).catch(console.error);
-      const msg = `${nameUser}, 𝐓𝐡𝐞 𝐚𝐧𝐬𝐰𝐞𝐞𝐫 𝐢𝐬 𝐰𝐫𝐨𝐧𝐠! 𝐓𝐡𝐞 𝐜𝐨𝐫𝐫𝐞𝐜𝐭 𝐚𝐧𝐬𝐰𝐞𝐫 𝐢𝐬: ${correctAnswer}`;
+      const msg = `${nameUser}, The answer is wrong! The correct answer is: ${correctAnswer}`;
       return api.sendMessage(msg, event.threadID);
     }
   },
