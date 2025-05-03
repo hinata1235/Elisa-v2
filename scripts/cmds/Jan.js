@@ -1,11 +1,14 @@
 const axios = require("axios");
-
-const baseApiUrl = async () => "https://mahmud-jan-apis.onrender.com/jan/font3";
+ 
+const baseApiUrl = async () => {
+  const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/exe/main/baseApiUrl.json");
+  return base.data.jan;
+};
 
 async function getBotResponse(message) {
   try {
     const base = await baseApiUrl();
-    const response = await axios.get(`${base}/${encodeURIComponent(message)}`);
+    const response = await axios.get(`${base}/jan/font3/${encodeURIComponent(message)}`);
     return response.data?.message || "try Again";
   } catch (error) {
     console.error("API Error:", error.message || error);
